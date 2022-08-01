@@ -1,7 +1,9 @@
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import useIsMountedRef from 'use-is-mounted-ref';
+
 // material
 import {
   Card,
@@ -20,23 +22,18 @@ import {
 } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
+  { id: 'company', label: 'Phone', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
-  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -126,6 +123,27 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
+  const handleNewUser = (event) => {
+    console.log(product);
+  };
+  const isMountedRef = useIsMountedRef();
+  const [product, setProduct] = useState([]);
+
+  const getProduct = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/users');
+      if (isMountedRef.current) {
+        setProduct(response.data);
+      }
+    } catch (err) {
+      //
+    }
+  }, [isMountedRef]);
+
+  useEffect(() => {
+    getProduct();
+  },[]);
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
   const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
@@ -139,7 +157,13 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            variant="contained"
+            component={RouterLink}
+            to="#"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={handleNewUser}
+          >
             New User
           </Button>
         </Stack>
@@ -161,7 +185,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, role, company, avatarUrl } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -186,13 +210,6 @@ export default function User() {
                         </TableCell>
                         <TableCell align="left">{company}</TableCell>
                         <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell>
-
                         <TableCell align="right">
                           <UserMoreMenu />
                         </TableCell>

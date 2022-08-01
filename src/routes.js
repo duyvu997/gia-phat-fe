@@ -1,5 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
+import { routesString } from './constants/index';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
@@ -16,11 +17,12 @@ import DashboardApp from './pages/DashboardApp';
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
+      path: '/home',
       element: <DashboardLayout />,
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
+        { path: '', element: <Navigate to={routesString.DASHBOARD} /> },
+        { path: 'dashboard', element: <DashboardApp /> },
+        { path: 'users', element: <User /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
       ],
@@ -29,13 +31,13 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Navigate to={routesString.DASHBOARD} /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
-        { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
     },
+    { path: '404', element: <NotFound /> },
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);
 }
