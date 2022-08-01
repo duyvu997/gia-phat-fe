@@ -1,10 +1,7 @@
 import { filter } from 'lodash';
-import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import useIsMountedRef from 'use-is-mounted-ref';
-
-// material
 import {
   Card,
   Table,
@@ -20,20 +17,18 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-// components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-// mock
-import USERLIST from '../_mock/user';
-// ----------------------------------------------------------------------
+import { fetchUsersAction } from '../api/actions/user';
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Phone', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'name', label: 'Tên', alignRight: false },
+  { id: 'phone', label: 'Điện thoại', alignRight: false },
+  { id: 'role', label: 'Vị trí', alignRight: false },
+  { id: 'joined', label: 'Ngày vào làm', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -88,7 +83,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = products.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -124,29 +119,29 @@ export default function User() {
   };
 
   const handleNewUser = (event) => {
-    console.log(product);
+    // console.log(products);
   };
   const isMountedRef = useIsMountedRef();
-  const [product, setProduct] = useState([]);
+  const [products, setProduct] = useState([]);
 
   const getProduct = useCallback(async () => {
     try {
-      const response = await axios.get('/api/users');
+      const response = await fetchUsersAction();
       if (isMountedRef.current) {
-        setProduct(response.data);
+        setProduct(response);
       }
     } catch (err) {
-      //
+      console.log(err);
     }
   }, [isMountedRef]);
 
   useEffect(() => {
     getProduct();
-  },[]);
+  }, []);
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(products, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -178,14 +173,14 @@ export default function User() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={products.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, company, avatarUrl } = row;
+                    const { id, name, role, join_date: joinDate, avatarUrl, phone } = row;
                     const isItemSelected = selected.indexOf(name) !== -1;
 
                     return (
@@ -208,8 +203,9 @@ export default function User() {
                             </Typography>
                           </Stack>
                         </TableCell>
-                        <TableCell align="left">{company}</TableCell>
+                        <TableCell align="left">{phone}</TableCell>
                         <TableCell align="left">{role}</TableCell>
+                        <TableCell align="left">{joinDate}</TableCell>
                         <TableCell align="right">
                           <UserMoreMenu />
                         </TableCell>
@@ -239,7 +235,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={products.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
