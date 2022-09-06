@@ -1,0 +1,49 @@
+
+.dropzone {
+  text-align: center;
+  padding: 20px;
+  border: 3px dashed #eeeeee;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  margin-bottom: 20px;
+    .dropzone-wrapper{
+        display: flex;
+        justify-content: center;
+    }
+  &.error {
+    color: red;
+    border-color: red;
+
+    .dropzone {
+      border-color: red;
+
+      &:hover {
+        border-color: red;
+      }
+    }
+
+    p {
+      color: red;
+
+    }
+  }
+
+  .dropzone {
+    cursor: pointer;
+    transition: .3s;
+
+    &:hover {
+      border-color: #000;
+    }
+  }
+
+  img {
+    max-width: 50%;
+    position: relative;
+
+    &::before {
+      content: '';
+      background: initial;
+    }
+  }
+}

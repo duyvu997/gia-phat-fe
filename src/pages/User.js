@@ -1,4 +1,5 @@
 import { filter } from 'lodash';
+import moment from 'moment';
 import { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import useIsMountedRef from 'use-is-mounted-ref';
@@ -23,12 +24,14 @@ import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
 import { fetchUsersAction } from '../api/actions/user';
+import { routesString } from '../constants/config';
 
 const TABLE_HEAD = [
+  { id: 'avatar', label: 'Ảnh đại diện', alignRight: false },
   { id: 'name', label: 'Tên', alignRight: false },
   { id: 'phone', label: 'Điện thoại', alignRight: false },
   { id: 'role', label: 'Vị trí', alignRight: false },
-  { id: 'joined', label: 'Ngày vào làm', alignRight: false },
+  { id: 'joined_date', label: 'Ngày vào làm', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -155,7 +158,7 @@ export default function User() {
           <Button
             variant="contained"
             component={RouterLink}
-            to="#"
+            to={routesString.USER_CREATE}
             startIcon={<Iconify icon="eva:plus-fill" />}
             onClick={handleNewUser}
           >
@@ -180,8 +183,8 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, join_date: joinDate, avatarUrl, phone } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
+                    const { id, first_name: firstName, role, joined_date: joinDate, avatar, phone } = row;
+                    const isItemSelected = selected.indexOf(firstName) !== -1;
 
                     return (
                       <TableRow
@@ -193,19 +196,15 @@ export default function User() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, firstName)} />
                         </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
+                        <TableCell align="left">
+                          <Avatar alt={firstName} src={avatar} />
                         </TableCell>
+                        <TableCell align="left">{firstName}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
                         <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{joinDate}</TableCell>
+                        <TableCell align="left">{moment(joinDate).format('DD-MM-YYYY')}</TableCell>
                         <TableCell align="right">
                           <UserMoreMenu />
                         </TableCell>

@@ -6,6 +6,7 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Blog from './pages/Blog';
 import User from './pages/User';
+import UserCreate from './pages/UserCreate';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
@@ -23,7 +24,9 @@ export default function Router() {
         { path: '', element: <Navigate to={routesString.DASHBOARD} /> },
         { path: 'dashboard', element: <DashboardApp /> },
         { path: 'users', element: <User /> },
-        { path: 'products', element: <Products /> },
+        { path: 'users/create', element: <UserCreate /> },
+        { path: 'users/update/:id', element: <UserCreate /> },
+        { path: 'projects', element: <User /> },
         { path: 'blog', element: <Blog /> },
       ],
     },

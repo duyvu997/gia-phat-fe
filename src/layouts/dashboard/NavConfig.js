@@ -18,7 +18,7 @@ const navConfig = [
   },
   {
     title: 'Dự án',
-    path: '/home/products',
+    path: '/home/projects',
     icon: getIcon('eva:shopping-bag-fill'),
   },
   // {

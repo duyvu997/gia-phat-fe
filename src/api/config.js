@@ -3,7 +3,7 @@ const REACT_APP_API_URL = process.env.REACT_APP_API_URL || 'http://localhost:300
 const config = {
   API: {
     AUTH_SERVICE: '/login',
-    USER_SERVICE: '/users',
+    USER_SERVICE: '/employees',
   },
 };
 
