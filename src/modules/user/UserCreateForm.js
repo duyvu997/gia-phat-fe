@@ -1,26 +1,24 @@
 /* eslint-disable react/prop-types */
 import { LoadingButton } from '@mui/lab';
-import { Button, Grid, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Grid, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material';
 import { Form, FormikProvider, useFormik } from 'formik';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { UserRole } from '../../constants/enum';
+import CONSTANT from '../../constants/enum';
 import { TribeBlastSelect } from '../../components/select/Select';
 import Dropzone from '../../components/dropzone/Dropzone';
 import Iconify from '../../components/Iconify';
 
-const UserCreateForm = ({ onSubmit, data, initialValues, id }) => {
+const UserCreateForm = ({ onSubmit, initialValues, id }) => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [userName, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
   const UserSchema = Yup.object().shape({
     // userName: Yup.string().required('Username is required.'),
     // email: Yup.string().email('Email must be a valid email address.').required('Email is required.'),
     // password: Yup.string(),
-    // walletAddress: Yup.string().required('Wallet address is required.'),
-    // role: Yup.mixed().oneOf([UserRole.ADMIN, UserRole.PLAYER]).required('Role is required.'),
   });
 
   const formik = useFormik({
@@ -29,7 +27,6 @@ const UserCreateForm = ({ onSubmit, data, initialValues, id }) => {
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       setLoading(true);
-
       const response = await onSubmit(values);
 
       setLoading(false);
@@ -42,14 +39,25 @@ const UserCreateForm = ({ onSubmit, data, initialValues, id }) => {
     setShowPassword((show) => !show);
   };
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps, setFieldValue, setFieldError } = formik;
+  const { errors, touched, handleSubmit, getFieldProps, setFieldValue, setFieldError } = formik;
   const handleChangeDropzone = (name) => (value) => {
     setFieldValue(name, value);
   };
+
+  const handleChangeName = (event) => {
+    setName(event.target.value);
+  };
+  const handleChangePhone = (event) => {
+    setPhone(event.target.value);
+  };
+  const handleChangeUsername = (event) => {
+    setUsername(event.target.value);
+  };
+
   return (
     <FormikProvider value={formik}>
       <Typography px={2} variant="h4" gutterBottom>
-        Create User
+        Thêm nhân viên
       </Typography>
       <Grid container px={2} mt={2}>
         <Grid item xs={12}>
@@ -58,27 +66,32 @@ const UserCreateForm = ({ onSubmit, data, initialValues, id }) => {
               <TextField
                 disabled={!!id}
                 fullWidth
-                autoComplete="email"
                 type="text"
-                label="Email"
-                {...getFieldProps('email')}
+                label="Họ và tên"
+                {...getFieldProps('name')}
                 error={Boolean(touched.email && errors.email)}
-                helperText={touched.email && errors.email}
+                helpertext={touched.email && errors.email}
               />
               <TextField
                 fullWidth
-                autoComplete="userName"
+                type="number"
+                label="Số điện thoại"
+                {...getFieldProps('phone')}
+                error={Boolean(touched.phone && errors.phone)}
+                helpertext={touched.phone && errors.phone}
+              />
+              <TextField
+                fullWidth
                 type="text"
-                label="Username"
+                label="Tên đăng nhập"
                 {...getFieldProps('userName')}
                 error={Boolean(touched.userName && errors.userName)}
-                helperText={touched.userName && errors.userName}
+                helpertext={touched.userName && errors.userName}
               />
               <TextField
                 fullWidth
-                autoComplete="password"
                 type={showPassword ? 'text' : 'password'}
-                label="Password"
+                label="Mật khẩu"
                 {...getFieldProps('password')}
                 InputProps={{
                   endAdornment: (
@@ -90,48 +103,54 @@ const UserCreateForm = ({ onSubmit, data, initialValues, id }) => {
                   ),
                 }}
                 error={Boolean(touched.password && errors.password)}
-                helperText={touched.password && errors.password}
+                helpertext={touched.password && errors.password}
               />
-
-              {/* <TribeBlastSelect
-                label="Role"
-                {...getFieldProps('role')}
-                error={Boolean(touched.role && errors.role)}
-                helperText={touched.role && errors.role}
-                children={[
-                  {
-                    label: UserRole.PLAYER,
-                    value: UserRole.PLAYER,
-                  },
-                  {
-                    label: UserRole.ADMIN,
-                    value: UserRole.ADMIN,
-                  },
-                ]}
-              /> */}
-
               <TextField
                 fullWidth
-                disabled={!!id}
-                autoComplete="walletAddress"
-                type="text"
-                label="Wallet address"
-                {...getFieldProps('walletAddress')}
-                error={Boolean(touched.walletAddress && errors.walletAddress)}
-                helperText={touched.walletAddress && errors.walletAddress}
+                type={showPassword ? 'text' : 'password'}
+                label="Nhập lại mật khẩu"
+                {...getFieldProps('repassword')}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleShowPassword} edge="end">
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                error={Boolean(touched.repassword && errors.repassword)}
+                helpertext={touched.repassword && errors.repassword}
+              />
+
+              <TribeBlastSelect
+                label="Vai trò"
+                error={Boolean(touched.role && errors.role)}
+                helpertext={touched.role && errors.role}
+                {...getFieldProps('role')}
+                children={[
+                  {
+                    label: CONSTANT.UserRole.STAFF,
+                    value: CONSTANT.UserRole.STAFF,
+                  },
+                  {
+                    label: CONSTANT.UserRole.ADMIN,
+                    value: CONSTANT.UserRole.ADMIN,
+                  },
+                ]}
               />
 
               <Dropzone
-                defaultValue={getFieldProps('avatarImage').value}
                 name={'avatarImage'}
                 error={touched?.avatarImage && Boolean(errors?.avatarImage || false)}
                 errorText={errors?.avatarImage}
                 handleUpload={handleChangeDropzone('avatarImage')}
-                placeholder={'Anh dai dien'}
+                {...getFieldProps('avatar')}
+                placeholder={'Ảnh đại diện'}
               />
             </Stack>
             <LoadingButton type="submit" style={{ marginTop: 20 }} loading={loading} variant="contained" size="large">
-              SAVE
+              Lưu
             </LoadingButton>
           </Form>
         </Grid>

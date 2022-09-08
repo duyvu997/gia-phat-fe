@@ -27,7 +27,6 @@ import { fetchUsersAction } from '../api/actions/user';
 import { routesString } from '../constants/config';
 
 const TABLE_HEAD = [
-  { id: 'avatar', label: 'Ảnh đại diện', alignRight: false },
   { id: 'name', label: 'Tên', alignRight: false },
   { id: 'phone', label: 'Điện thoại', alignRight: false },
   { id: 'role', label: 'Vị trí', alignRight: false },
@@ -153,7 +152,7 @@ export default function User() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            User
+            Nhân viên
           </Typography>
           <Button
             variant="contained"
@@ -162,12 +161,12 @@ export default function User() {
             startIcon={<Iconify icon="eva:plus-fill" />}
             onClick={handleNewUser}
           >
-            New User
+            Thêm nhân viên
           </Button>
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          {/* <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} /> */}
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -183,7 +182,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, first_name: firstName, role, joined_date: joinDate, avatar, phone } = row;
+                    const { id, first_name: firstName, role, joined_date: joinDate, phone } = row;
                     const isItemSelected = selected.indexOf(firstName) !== -1;
 
                     return (
@@ -197,9 +196,6 @@ export default function User() {
                       >
                         <TableCell padding="checkbox">
                           <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, firstName)} />
-                        </TableCell>
-                        <TableCell align="left">
-                          <Avatar alt={firstName} src={avatar} />
                         </TableCell>
                         <TableCell align="left">{firstName}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
@@ -239,6 +235,7 @@ export default function User() {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage=""
           />
         </Card>
       </Container>

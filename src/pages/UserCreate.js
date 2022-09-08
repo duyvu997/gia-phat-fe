@@ -4,16 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import UserCreateForm from '../modules/user/UserCreateForm';
 import { routesString } from '../constants/config';
-import { SpinItemType } from '../constants/enum';
 import API from '../api';
 import config from '../api/config';
 import { createUserAction } from '../api/actions/user';
 
-const AreaItemCreate = () => {
+const UserCreate = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  // const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = useState(!!id);
   const [data, setData] = useState(null);
@@ -51,9 +50,10 @@ const AreaItemCreate = () => {
   // };
 
   const handleSave = async (data) => {
-  //   try {
-  //     const { details } = data;
-  //     const updatedDetails = [];
+    try {
+      const { details } = data;
+      console.log({data})
+      //     const updatedDetails = [];
   //     // eslint-disable-next-line no-restricted-syntax
   //     for (const detail of details) {
   //       console.log('detail', detail);
@@ -89,20 +89,24 @@ const AreaItemCreate = () => {
   //       variant: 'success',
   //     });
   //     navigate(routesString.AREA_ITEMS);
-  //   } catch (error) {
-  //     enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
-  //       variant: 'error',
-  //     });
-  //   }
+    } catch (error) {
+      // enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
+      //   variant: 'error',
+      // });
+    }
   };
 
   const initialValues = useMemo(
     () => ({
-      itemType: data?.itemType || '',
-      maxLevel: data?.maxLevel || 1,
-      details: data?.details || [],
+      name: '',
+      phone: '',
+      userName: '',
+      password: '',
+      repassword: '',
+      role: '',
+      avatar: '',
     }),
-    [data]
+    []
   );
   return isLoading ? (
     <div>Loading...</div>
@@ -117,4 +121,4 @@ const AreaItemCreate = () => {
   );
 };
 
-export default AreaItemCreate;
+export default UserCreate;

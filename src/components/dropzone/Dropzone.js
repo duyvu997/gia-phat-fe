@@ -8,7 +8,7 @@ import './Dropzone.scss';
 const VALID_IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/png'];
 
 const Dropzone = ({ defaultValue, name, handleUpload, error, errorText, placeholder }) => {
-  const [fileNames, setFileNames] = useState([]);
+  const [, setFileNames] = useState([]);
   const [filePreview, setFilePreview] = useState(defaultValue);
 
   useEffect(() => {
@@ -42,26 +42,28 @@ const Dropzone = ({ defaultValue, name, handleUpload, error, errorText, placehol
 
   return (
     <>
-      <div className={`dropzone ${error ? 'error' : ''}`}>
-        <ReactDropzone
-          noKeyboard
-          onDrop={handleDrop}
-          multiple={false}
-          accept={{
-            'image/png': ['.png'],
-            'image/jpg': ['.jpg'],
-            'image/jpeg': ['.jpeg'],
-          }}
-        >
-          {({ getRootProps, getInputProps }) => (
-            <div {...getRootProps({ className: 'dropzone' })}>
-              <input {...getInputProps()} />
-              <p name={name}>{placeholder}</p>
-            </div>
-          )}
-        </ReactDropzone>
+      <div className={`dropzone-parents ${error ? 'error' : ''}`}>
+        {!filePreview && (
+          <ReactDropzone
+            noKeyboard
+            onDrop={handleDrop}
+            multiple={false}
+            accept={{
+              'image/png': ['.png'],
+              'image/jpg': ['.jpg'],
+              'image/jpeg': ['.jpeg'],
+            }}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <div {...getRootProps({ className: 'dropzone' })}>
+                <input {...getInputProps()} />
+                <p name={name}>{placeholder}</p>
+              </div>
+            )}
+          </ReactDropzone>
+        )}
         <div className="dropzone-wrapper">
-          {filePreview && <img src={filePreview} alt="National ID" />}
+          {filePreview && <img src={filePreview} alt="avatar" className="center" />}
           {filePreview && (
             <div className="dropzone-wrapper__close">
               <Iconify
