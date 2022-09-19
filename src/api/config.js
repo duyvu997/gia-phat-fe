@@ -4,6 +4,7 @@ const config = {
   API: {
     AUTH_SERVICE: '/login',
     USER_SERVICE: '/employees',
+    FILE_SERVICE: '/files',
   },
 };
 

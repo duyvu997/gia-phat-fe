@@ -11,14 +11,14 @@ import Iconify from '../../components/Iconify';
 
 const UserCreateForm = ({ onSubmit, initialValues, id }) => {
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [userName, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
   const UserSchema = Yup.object().shape({
-    // userName: Yup.string().required('Username is required.'),
-    // email: Yup.string().email('Email must be a valid email address.').required('Email is required.'),
-    // password: Yup.string(),
+    userName: Yup.string().required('Username is required.'),
+    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    password: Yup.string(),
   });
 
   const formik = useFormik({
@@ -27,6 +27,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       setLoading(true);
+      console.log({ values });
       const response = await onSubmit(values);
 
       setLoading(false);
@@ -44,16 +45,6 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
     setFieldValue(name, value);
   };
 
-  const handleChangeName = (event) => {
-    setName(event.target.value);
-  };
-  const handleChangePhone = (event) => {
-    setPhone(event.target.value);
-  };
-  const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
-  };
-
   return (
     <FormikProvider value={formik}>
       <Typography px={2} variant="h4" gutterBottom>
@@ -69,8 +60,8 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
                 type="text"
                 label="Họ và tên"
                 {...getFieldProps('name')}
-                error={Boolean(touched.email && errors.email)}
-                helpertext={touched.email && errors.email}
+                error={Boolean(touched.name && errors.name)}
+                helpertext={touched.name && errors.name}
               />
               <TextField
                 fullWidth

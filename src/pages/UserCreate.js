@@ -6,7 +6,7 @@ import UserCreateForm from '../modules/user/UserCreateForm';
 import { routesString } from '../constants/config';
 import API from '../api';
 import config from '../api/config';
-import { createUserAction } from '../api/actions/user';
+import { uploadFiles } from '../api/actions/upload-file';
 
 const UserCreate = () => {
   const navigate = useNavigate();
@@ -51,44 +51,25 @@ const UserCreate = () => {
 
   const handleSave = async (data) => {
     try {
-      const { details } = data;
-      console.log({data})
-      //     const updatedDetails = [];
-  //     // eslint-disable-next-line no-restricted-syntax
-  //     for (const detail of details) {
-  //       console.log('detail', detail);
-  //       // eslint-disable-next-line no-await-in-loop, no-loop-func
-  //       const filesData = await Object.keys(detail).reduce(async (accmu, key) => {
-  //         const updatedAccmu = await accmu;
-  //         if (detail[key] instanceof File) {
-  //           const imageUrl = await uploadFiles([detail[key]], key);
-  //           return {
-  //             ...updatedAccmu,
-  //             [key]: imageUrl,
-  //           };
-  //         }
-  //         return updatedAccmu;
-  //       }, Promise.resolve({}));
-  //       console.log('filesData', filesData);
-  //       updatedDetails.push({
-  //         ...detail,
-  //         ...filesData,
-  //       });
-  //     }
-  //     const populatedData = {
-  //       ...data,
-  //       details: updatedDetails.map((ele, idx) => ({
-  //         ...ele,
-  //         level: idx + 1,
-  //       })),
-  //     };
+      const { avatarImage } = data;
+      console.log(typeof avatarImage);
+      const url = await uploadFiles(avatarImage);
+      console.log(url, 123);
+      
+      //     const populatedData = {
+      //       ...data,
+      //       details: updatedDetails.map((ele, idx) => ({
+      //         ...ele,
+      //         level: idx + 1,
+      //       })),
+      //     };
 
-  //     await (id ? updateAreaItemAction(id, populatedData) : createAreaItemAction(populatedData));
+      //     await (id ? updateAreaItemAction(id, populatedData) : createAreaItemAction(populatedData));
 
-  //     enqueueSnackbar('Successfully!', {
-  //       variant: 'success',
-  //     });
-  //     navigate(routesString.AREA_ITEMS);
+      //     enqueueSnackbar('Successfully!', {
+      //       variant: 'success',
+      //     });
+      //     navigate(routesString.AREA_ITEMS);
     } catch (error) {
       // enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
       //   variant: 'error',
