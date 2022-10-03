@@ -64,6 +64,22 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+  const handleDelete = async (id) => {
+    try {
+      // await deleteUserAction(id);
+
+      // enqueueSnackbar('Delete is successfully.', {
+      //   variant: 'success',
+      // });
+
+      // fetchUsers();
+    } catch (error) {
+      // enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
+      //   variant: 'error',
+      // });
+    }
+  };
+
 export default function User() {
   const [page, setPage] = useState(0);
 
@@ -202,7 +218,7 @@ export default function User() {
                         <TableCell align="left">{role}</TableCell>
                         <TableCell align="left">{moment(joinDate).format('DD-MM-YYYY')}</TableCell>
                         <TableCell align="right">
-                          <UserMoreMenu />
+                          <UserMoreMenu item={row} handleDelete={handleDelete} />
                         </TableCell>
                       </TableRow>
                     );

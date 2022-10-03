@@ -9,6 +9,10 @@ import { TribeBlastSelect } from '../../components/select/Select';
 import Dropzone from '../../components/dropzone/Dropzone';
 import Iconify from '../../components/Iconify';
 
+function CustomTextField({ helpertext, ...props }) {
+  return <TextField {...props} helperText={helpertext} />;
+}
+
 const UserCreateForm = ({ onSubmit, initialValues, id }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -16,8 +20,9 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const UserSchema = Yup.object().shape({
-    userName: Yup.string().required('Username is required.'),
-    phone: Yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    name: Yup.string().required('name is required.'),
+    userName: Yup.string().required('username is required.'),
+    phone: Yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
     password: Yup.string(),
   });
 
@@ -27,7 +32,6 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
     validationSchema: UserSchema,
     onSubmit: async (values) => {
       setLoading(true);
-      console.log({ values });
       const response = await onSubmit(values);
 
       setLoading(false);
@@ -40,7 +44,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
     setShowPassword((show) => !show);
   };
 
-  const { errors, touched, handleSubmit, getFieldProps, setFieldValue, setFieldError } = formik;
+  const { errors, touched, handleSubmit, getFieldProps, setFieldValue } = formik;
   const handleChangeDropzone = (name) => (value) => {
     setFieldValue(name, value);
   };
@@ -54,8 +58,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
         <Grid item xs={12}>
           <Form autoComplete="off" onSubmit={handleSubmit}>
             <Stack spacing={2}>
-              <TextField
-                disabled={!!id}
+              <CustomTextField
                 fullWidth
                 type="text"
                 label="Họ và tên"
@@ -63,7 +66,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
                 error={Boolean(touched.name && errors.name)}
                 helpertext={touched.name && errors.name}
               />
-              <TextField
+              <CustomTextField
                 fullWidth
                 type="number"
                 label="Số điện thoại"
@@ -71,7 +74,8 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
                 error={Boolean(touched.phone && errors.phone)}
                 helpertext={touched.phone && errors.phone}
               />
-              <TextField
+              <CustomTextField
+                disabled={!!id}
                 fullWidth
                 type="text"
                 label="Tên đăng nhập"
@@ -79,7 +83,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
                 error={Boolean(touched.userName && errors.userName)}
                 helpertext={touched.userName && errors.userName}
               />
-              <TextField
+              <CustomTextField
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
                 label="Mật khẩu"
@@ -96,7 +100,7 @@ const UserCreateForm = ({ onSubmit, initialValues, id }) => {
                 error={Boolean(touched.password && errors.password)}
                 helpertext={touched.password && errors.password}
               />
-              <TextField
+              <CustomTextField
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
                 label="Nhập lại mật khẩu"
