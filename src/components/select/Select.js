@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 
-export const TribeBlastSelect = ({ handleChange, label, children, ...props }) => (
+export const CustomSelect = ({ handleChange, label, children, ...props }) => (
     <FormControl error={props.error} fullWidth>
       <InputLabel id={`select-${label}`}>{label}</InputLabel>
       <Select labelId={`select-${label}`} label={label} onChange={handleChange} {...props}>

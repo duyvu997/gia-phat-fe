@@ -64,21 +64,19 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-  const handleDelete = async (id) => {
-    try {
-      // await deleteUserAction(id);
-
-      // enqueueSnackbar('Delete is successfully.', {
-      //   variant: 'success',
-      // });
-
-      // fetchUsers();
-    } catch (error) {
-      // enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
-      //   variant: 'error',
-      // });
-    }
-  };
+const handleDelete = async (id) => {
+  try {
+    // await deleteUserAction(id);
+    // enqueueSnackbar('Delete is successfully.', {
+    //   variant: 'success',
+    // });
+    // fetchUsers();
+  } catch (error) {
+    // enqueueSnackbar(error.response.data.errors || error.response.data.message || error.message, {
+    //   variant: 'error',
+    // });
+  }
+};
 
 export default function User() {
   const [page, setPage] = useState(0);
@@ -89,9 +87,7 @@ export default function User() {
 
   const [orderBy, setOrderBy] = useState('name');
 
-  const [filterName, setFilterName] = useState('');
-
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -108,21 +104,6 @@ export default function User() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -132,13 +113,6 @@ export default function User() {
     setPage(0);
   };
 
-  const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
-  };
-
-  const handleNewUser = (event) => {
-    // console.log(products);
-  };
   const isMountedRef = useIsMountedRef();
   const [products, setProduct] = useState([]);
 
@@ -159,7 +133,7 @@ export default function User() {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
 
-  const filteredUsers = applySortFilter(products, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(products, getComparator(order, orderBy));
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -175,15 +149,12 @@ export default function User() {
             component={RouterLink}
             to={routesString.USER_CREATE}
             startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={handleNewUser}
           >
             Thêm nhân viên
           </Button>
         </Stack>
 
         <Card>
-          {/* <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} /> */}
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -198,7 +169,7 @@ export default function User() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, first_name: firstName, role, joined_date: joinDate, phone } = row;
+                    const { id, first_name: firstName, role, joined_date: joinDate, phone, avatar } = row;
                     const isItemSelected = selected.indexOf(firstName) !== -1;
 
                     return (
@@ -210,10 +181,14 @@ export default function User() {
                         selected={isItemSelected}
                         aria-checked={isItemSelected}
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, firstName)} />
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack ml={2} direction="row" alignItems="center" spacing={2}>
+                            <Avatar alt={firstName} src={avatar} />
+                            <Typography variant="subtitle2" noWrap>
+                              {firstName}
+                            </Typography>
+                          </Stack>
                         </TableCell>
-                        <TableCell align="left">{firstName}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
                         <TableCell align="left">{role}</TableCell>
                         <TableCell align="left">{moment(joinDate).format('DD-MM-YYYY')}</TableCell>
@@ -234,7 +209,7 @@ export default function User() {
                   <TableBody>
                     <TableRow>
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
+                        <SearchNotFound />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -244,7 +219,7 @@ export default function User() {
           </Scrollbar>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[25, 50, 125]}
             component="div"
             count={products.length}
             rowsPerPage={rowsPerPage}

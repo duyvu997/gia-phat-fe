@@ -40,7 +40,7 @@ const UserCreate = () => {
         phone: data.phone,
         birthday: data.birthday,
         role: data.role === 'STAFF' ? 'staff' : 'admin',
-        joined_date: new Date(),
+        joined_date: data.joinedDate,
         avatar: url,
       };
 
@@ -66,17 +66,14 @@ const UserCreate = () => {
       repassword: '',
       role: data?.role === 'admin' ? 'ADMIN' : 'STAFF',
       avatar: data?.avatar,
+      joinedDate: data?.joined_date,
     }),
     [data]
   );
   return isLoading ? (
     <div>Loading...</div>
   ) : (
-    <UserCreateForm
-      onSubmit={handleSave}
-      id={id}
-      initialValues={initialValues}
-    />
+    <UserCreateForm onSubmit={handleSave} id={id} initialValues={initialValues} />
   );
 };
 
