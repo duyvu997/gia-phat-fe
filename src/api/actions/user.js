@@ -56,7 +56,7 @@ export const updateUserAction = async (id, data) => {
   const response = await API({
     url: `${config.API.USER_SERVICE}/${id}`,
     data,
-    method: 'put',
+    method: 'patch',
   });
   return response;
 };

@@ -1,8 +1,7 @@
+/* eslint-disable consistent-return */
 // material
 import { styled } from '@mui/material/styles';
-//
 import { isEmpty } from 'lodash';
-
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { routesString } from '../../constants/index';
@@ -42,7 +41,6 @@ export default function DashboardLayout() {
   const { me, fetchMe } = useUserStore((state) => state);
   const accessToken = useAuthStore((state) => state.access.token);
 
-  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (!accessToken) {
       return navigate(routesString.LOGIN);

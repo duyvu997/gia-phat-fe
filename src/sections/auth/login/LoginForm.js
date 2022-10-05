@@ -34,14 +34,12 @@ export default function LoginForm() {
     onSubmit: async (data) => {
       try {
         const result = await login(data);
-        console.log(result);
         setAuthState({
           access: {
             token: result.data.accessToken,
           },
         });
         setMe(result.data);
-        console.log(123444);
         navigate(routesString.DASHBOARD);
       } catch (error) {
         console.log(error);

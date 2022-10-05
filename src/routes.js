@@ -10,8 +10,7 @@ import UserCreate from './pages/UserCreate';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
-import Products from './pages/Products';
-import DashboardApp from './pages/DashboardApp';
+// import DashboardApp from './pages/DashboardApp';
 
 // ----------------------------------------------------------------------
 
@@ -22,7 +21,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: '', element: <Navigate to={routesString.DASHBOARD} /> },
-        { path: 'dashboard', element: <DashboardApp /> },
+        { path: 'dashboard', element: <UserCreate /> },
         { path: 'users', element: <User /> },
         { path: 'users/create', element: <UserCreate /> },
         { path: 'users/update/:id', element: <UserCreate /> },
